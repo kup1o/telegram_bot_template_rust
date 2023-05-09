@@ -1,0 +1,3 @@
+authorized_user_ids = [0000000000]
+telegram_bot_token = "0000000000:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+check_interval_secs = 600
