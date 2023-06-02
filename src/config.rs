@@ -1,6 +1,7 @@
 use log::error;
 use secrecy::{ExposeSecret, Secret};
 use serde::Deserialize;
+use serde_json::from_slice;
 use std::env;
 
 const CONFIG_PATH_ENV: &str = "CONFIG_PATH";
@@ -31,7 +32,7 @@ pub fn read_config() -> Config {
     env::var(&CONFIG_PATH_ENV)
         .map_err(|_| format!("{CONFIG_PATH_ENV} environment variable not set"))
         .and_then(|config_path| std::fs::read(config_path).map_err(|e| e.to_string()))
-        .and_then(|bytes| toml::from_slice(&bytes).map_err(|e| e.to_string()))
+        .and_then(|bytes| from_slice(&bytes).map_err(|e| e.to_string()))
         .unwrap_or_else(|err| {
             error!("failed to read config: {err}");
             std::process::exit(1);
