@@ -67,32 +67,32 @@ impl MyBot {
 }
 
 pub async fn handle_command(
-    message: Message,
+    msg: Message,
     tg: Arc<Bot>,
     command: Command,
 ) -> Result<()> {
     async fn handle(
-        message: &Message,
+        msg: &Message,
         tg: &Bot,
         command: Command,
     ) -> Result<()> {
         match command {
             Command::Help => {
-                tg.send_message(message.chat.id, Command::descriptions().to_string())
+                tg.send_message(msg.chat.id, Command::descriptions().to_string())
                     .await?;
             }
             Command::Hi => {
                 let reply = "It works";
-                tg.send_message(message.chat.id, reply).await?;
+                tg.send_message(msg.chat.id, reply).await?;
             }
         };
 
         Ok(())
     }
 
-    if let Err(err) = handle(&message, &tg, command).await {
+    if let Err(err) = handle(&msg, &tg, command).await {
         error!("failed to handle message: {}", err);
-        tg.send_message(message.chat.id, "Something went wrong")
+        tg.send_message(msg.chat.id, "Something went wrong")
             .await?;
     }
 
