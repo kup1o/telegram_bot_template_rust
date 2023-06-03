@@ -69,7 +69,7 @@ impl MyBot {
 pub async fn handle_command(
     msg: Message,
     tg: Arc<Bot>,
-    command: Command,
+    cmd: Command,
 ) -> Result<()> {
     async fn handle(
         msg: &Message,
@@ -90,7 +90,7 @@ pub async fn handle_command(
         Ok(())
     }
 
-    if let Err(err) = handle(&msg, &tg, command).await {
+    if let Err(err) = handle(&msg, &tg, cmd).await {
         error!("failed to handle message: {}", err);
         tg.send_message(msg.chat.id, "Something went wrong")
             .await?;
