@@ -1,13 +1,18 @@
-use crate::*;
-use anyhow::Result;
 use std::sync::Arc;
+
+use anyhow::Result;
 use teloxide::{
     dispatching::DefaultKey,
     utils::command::BotCommands,
 };
 
+use crate::*;
+
 #[derive(BotCommands, Clone)]
-#[command(rename_rule = "lowercase", description = "These commands are supported:")]
+#[command(
+    rename_rule = "lowercase",
+    description = "These commands are supported:"
+)]
 pub enum Command {
     #[command(description = "display this text")]
     Help,
@@ -66,16 +71,8 @@ impl MyBot {
     }
 }
 
-pub async fn handle_command(
-    msg: Message,
-    tg: Arc<Bot>,
-    cmd: Command,
-) -> Result<()> {
-    async fn handle(
-        msg: &Message,
-        tg: &Bot,
-        command: Command,
-    ) -> Result<()> {
+pub async fn handle_command(msg: Message, tg: Arc<Bot>, cmd: Command) -> Result<()> {
+    async fn handle(msg: &Message, tg: &Bot, command: Command) -> Result<()> {
         match command {
             Command::Help => {
                 tg.send_message(msg.chat.id, Command::descriptions().to_string())
@@ -92,8 +89,7 @@ pub async fn handle_command(
 
     if let Err(err) = handle(&msg, &tg, cmd).await {
         error!("failed to handle message: {}", err);
-        tg.send_message(msg.chat.id, "Something went wrong")
-            .await?;
+        tg.send_message(msg.chat.id, "Something went wrong").await?;
     }
 
     Ok(())

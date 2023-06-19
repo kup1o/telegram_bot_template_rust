@@ -1,8 +1,14 @@
+use std::{
+    env,
+    fs,
+};
+
 use log::error;
-use secrecy::{ExposeSecret, Secret};
+use secrecy::{
+    ExposeSecret,
+    Secret,
+};
 use serde::Deserialize;
-use std::env;
-use std::fs;
 use toml::de::from_str;
 
 const CONFIG_PATH_ENV: &str = "CONFIG_PATH";

@@ -1,16 +1,23 @@
-use anyhow::Result;
-use log::*;
-use signal_hook::{
-    consts::signal::{SIGINT, SIGTERM},
-    iterator::Signals,
-};
-use std::string::ToString;
 use std::{
+    string::ToString,
     sync::{
-        atomic::{AtomicBool, Ordering},
+        atomic::{
+            AtomicBool,
+            Ordering,
+        },
         Arc,
     },
     time::Duration,
+};
+
+use anyhow::Result;
+use log::*;
+use signal_hook::{
+    consts::signal::{
+        SIGINT,
+        SIGTERM,
+    },
+    iterator::Signals,
 };
 use teloxide::prelude::*;
 use tokio::sync::broadcast;
