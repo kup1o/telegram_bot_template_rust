@@ -93,7 +93,7 @@ jobs:
       run: ${{ env.CARGO }} build --verbose $TARGET
 
     - name: Run tests
-      run: ${{ env.CARGO }} test --verbose --test default $TARGET
+      run: ${{ env.CARGO }} test --verbose --all-features
 
   rustfmt:
     name: rustfmt
