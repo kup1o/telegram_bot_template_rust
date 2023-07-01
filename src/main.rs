@@ -12,13 +12,6 @@ use std::{
 
 use anyhow::Result;
 use log::*;
-use signal_hook::{
-    consts::signal::{
-        SIGINT,
-        SIGTERM,
-    },
-    iterator::Signals,
-};
 use teloxide::prelude::*;
 use tokio::sync::broadcast;
 
@@ -51,21 +44,17 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let (bot_handle, bot_shutdown_token) = bot.spawn();
 
     {
-        let shutdown = shutdown.clone();
-        std::thread::spawn(move || {
-            let mut forward_signals =
-                Signals::new([SIGINT, SIGTERM]).expect("unable to watch for signals");
-
-            for signal in forward_signals.forever() {
-                info!("got signal {signal}, shutting down...");
-                shutdown.swap(true, Ordering::Relaxed);
-                let _res = bot_shutdown_token.shutdown();
-                let _res = shutdown_tx.send(()).unwrap_or_else(|_| {
-                    // Makes the second Ctrl-C exit instantly
-                    std::process::exit(0);
-                });
-            }
-        });
+        let shutdown_clone = shutdown.clone();
+        ctrlc::set_handler(move || {
+            info!("got signal Ctrl-C, shutting down...");
+            shutdown_clone.swap(true, Ordering::Relaxed);
+            let _res = bot_shutdown_token.shutdown();
+            let _res = shutdown_tx.send(()).unwrap_or_else(|_| {
+                // Makes the second Ctrl-C exit instantly
+                std::process::exit(0);
+            });
+        })
+        .expect("error setting Ctrl-C handler");
     }
 
     if let Err(err) = tokio::try_join!(bot_handle, sub_check_loop_handle) {
